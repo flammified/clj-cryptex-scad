@@ -140,9 +140,9 @@
     (write-scad
               (union
                 (difference (plate) (translate [0 0 120] (rotate (/ Math/PI 2) [0 1 0] (cylinder 15 100))))
-                (difference
-                  (main-part (* amount-of-rings (+ ring-width 1)))
-                  (translate [ (+ 1 (* amount-of-rings (+ 1 ring-width))) 0 0] stop-end))
-                (translate [600 0 0] (stick (+ 5 (* amount-of-rings (+ ring-width 1))) amount-of-rings))
-                (translate [ (+ 11 (* amount-of-rings (+ 1 ring-width))) 0 0] stop-end)
+                ; (difference
+                (main-part (+ 2 (* amount-of-rings (+ ring-width 1))))
+                  ; (translate [ (+ 1 (* amount-of-rings (+ 1 ring-width))) 0 0] stop-end))
+                (translate [400 0 0] (stick (+ 5 (* amount-of-rings (+ ring-width 1))) amount-of-rings))
+                (translate [ (+ 12 (* amount-of-rings (+ 1 ring-width))) 0 0] stop-end)
                 (rings amount-of-rings "abraham")))))
