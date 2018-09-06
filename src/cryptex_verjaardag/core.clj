@@ -134,7 +134,7 @@
              (translate [5 0 0])))))
 
 
-(spit "cryptex.scad"
+(spit "mainpart.scad"
   (let [amount-of-rings 7
         stop-end (stop-end (/ ring-width 2))]
     (write-scad
@@ -143,6 +143,12 @@
                 ; (difference
                 (main-part (+ 2 (* amount-of-rings (+ ring-width 1))))
                   ; (translate [ (+ 1 (* amount-of-rings (+ 1 ring-width))) 0 0] stop-end))
-                (translate [400 0 0] (stick (+ 5 (* amount-of-rings (+ ring-width 1))) amount-of-rings))
                 (translate [ (+ 12 (* amount-of-rings (+ 1 ring-width))) 0 0] stop-end)
                 (rings amount-of-rings "abraham")))))
+
+
+(spit "handle.scad"
+  (let [amount-of-rings 7
+        stop-end (stop-end (/ ring-width 2))]
+    (write-scad
+      (stick (+ 5 (* amount-of-rings (+ ring-width 1))) amount-of-rings))))
