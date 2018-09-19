@@ -5,29 +5,41 @@
 (def ring-width 30)
 (def slot-width 10)
 (def alphabet (vec (map char (concat (range 65 91)))))
+(def triangle (extrude-linear {:height 10} (polygon [[0 0] [20 0] [10 10]])))
 
+;; TODO remove magic numbers
 (defn main-part [length]
-  (let [outer (with-fn 50
-                (->> (cylinder 60 length)
+  (let [main-part-radius 60
+        outer (with-fn 50
+                (->> (cylinder main-part-radius length)
                      (rotate (/ Math/PI 2) [0 1 0])
                      (translate [(+ 20 (/ length 2)) 0 -70])))
         inner (with-fn 50
-                (->> (cylinder 45 (+ length 10))
+                (->> (cylinder (- main-part-radius 15) (+ length 10)) ;length is + 10 purely for stability
                      (rotate (/ Math/PI 2) [0 1 0])
-                     (translate [(+ 20 (/ length 2)) 0 -70])))
+                     (translate [(+ 20 (/ length 2)) 0 -70]))) ; + 20 for the plate
         slot  (->> (cube (+ 25 length) slot-width 40)
-                   (translate [(+ 30 (/ length 2)) 0 -20]))
+                   (translate [(+ 30 (/ length 2)) 0 -10]))
         ring (difference outer inner)
         intersection-to-remove (intersection ring slot)]
+    ; (union
     (difference ring slot)))
+      ; (->> triangle
+      ;      (rotate (/ Math/PI 2) [0 0 1])
+      ;      (rotate (* (/ Math/PI 2) 3) [0 1 0])
+      ;      (translate [20 -10 25])))))
+
 
 (defn emboss-letter [letter angle radius ring]
-  (difference
+  (union
     ring
-    (->> (text letter)
-         (extrude-linear {:height 5})
+    (->> (text letter :size 15)
+         (extrude-linear {:height 4})
          (rotate angle [1 0 0])
-         (translate [10 (- 0 (* radius (Math/sin (+ angle 0.05)))) (* radius (Math/cos (+ angle 0.05)))]))))
+
+         ;offset compensates for bounding box of the letter (+ angle <offset>)
+         ;TODO calculate from bounding box for more configurable cryptex
+         (translate [7.5 (- 0 (* radius (Math/sin (+ angle 0.08)))) (* radius (Math/cos (+ angle 0.08)))]))))
 
 
 (defn add-slots [ring offset]
@@ -37,7 +49,7 @@
         (let [angle (* index (/ (* 2 Math/PI) 26))
               radius 65]
           (difference
-            (emboss-letter (get (vec (take 52 (cycle alphabet))) (+ index offset)) angle 78 result)
+            (emboss-letter (get (vec (take 52 (cycle alphabet))) (+ index offset)) angle 85 result)
             (->> (cube 40 10 20)
                  (rotate angle [1 0 0])
                  (translate [5 (- 0 (* radius (Math/sin angle))) (* radius (Math/cos angle))])))))
@@ -49,7 +61,7 @@
 
 (defn movable-ring [width offset]
   (let [outer (with-fn 100
-                 (->> (cylinder 80 width)
+                 (->> (cylinder 85 width)
                       (rotate (/ Math/PI 2) [0 1 0])
                       (translate [(/ width 2) 0 0])))
         hole (with-fn 100
@@ -69,7 +81,7 @@
            (rotate (/ Math/PI 2) [0 1 0])
            (translate [10 0 -70]))
 
-      (->> (cube 20 90 180)
+      (->> (cube 20 40 180)
            (translate [10 0 65])))))
 
 (defn letter-to-offset [letter]
@@ -100,12 +112,13 @@
                (translate [(+ 20 (/ stick-length 2)) 0 -70]))
           (->> (plate)
                (translate [(+ stick-length 20) 0 0]))
-          (->> (cylinder 10 (+ lock-length stick-length))
+          (->> (cylinder 5 (+ lock-length stick-length))
                (rotate (/ Math/PI 2) [0 1 0])
                (translate [(- (+ 20 stick-length) (/ (+ lock-length stick-length) 2)) 0 120]))))
       amount-of-rings)))
 
-(defn stop-end [width]
+;I dont even know anymore
+(defn stop-end [width middle-height middle-length]
     (let [length 20
           outer (with-fn 50
                   (->> (cylinder 80 length)
@@ -123,10 +136,10 @@
         (difference ring slot)
         (->> (difference
                (difference
-                 (->> (cylinder 55 10)
+                 (->> (cylinder (+ 52.5 (/ middle-height 2)) middle-length)
                       (rotate (/ Math/PI 2) [0 1 0])
                       (translate [0 0 -70]))
-                 (->> (cylinder 50 11)
+                 (->> (cylinder (- 52.5 (/ middle-height 2)) (+ middle-length 1))
                       (rotate (/ Math/PI 2) [0 1 0])
                       (translate [0 0 -70])))
                (->> (cube (+ 50 length) (+ slot-width 5) 50)
@@ -134,21 +147,18 @@
              (translate [5 0 0])))))
 
 
-(spit "mainpart.scad"
-  (let [amount-of-rings 7
-        stop-end (stop-end (/ ring-width 2))]
-    (write-scad
-              (union
-                (difference (plate) (translate [0 0 120] (rotate (/ Math/PI 2) [0 1 0] (cylinder 15 100))))
-                ; (difference
-                (main-part (+ 2 (* amount-of-rings (+ ring-width 1))))
-                  ; (translate [ (+ 1 (* amount-of-rings (+ 1 ring-width))) 0 0] stop-end))
-                (translate [ (+ 12 (* amount-of-rings (+ 1 ring-width))) 0 0] stop-end)
-                (rings amount-of-rings "abraham")))))
 
-
-(spit "handle.scad"
+(spit "output/cryptex.scad"
   (let [amount-of-rings 7
-        stop-end (stop-end (/ ring-width 2))]
+        stop-end-difference (stop-end (/ ring-width 2) 6 14)
+        hole-stick 8]
     (write-scad
-      (stick (+ 5 (* amount-of-rings (+ ring-width 1))) amount-of-rings))))
+
+      (translate [-400 0 0](union
+                             (difference (plate) (translate [0 0 120] (rotate (/ Math/PI 2) [0 1 0] (cylinder hole-stick 100))))
+                             (difference
+                               (main-part (+ 2 (* amount-of-rings (+ ring-width 1))))
+                               (translate [ (+ 20 (* amount-of-rings ring-width)) 0 0] stop-end-difference))))
+      (translate [ (+ 50 18 (* amount-of-rings ring-width)) 0 0] (stop-end (/ ring-width 2) 5 11))
+      (translate [500 0 0] (stick (+ 15 20 (* amount-of-rings (+ ring-width 1))) amount-of-rings))
+      (rings amount-of-rings "abraham"))))
