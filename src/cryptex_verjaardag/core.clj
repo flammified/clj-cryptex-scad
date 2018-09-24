@@ -5,19 +5,19 @@
 (def ring-width 30)
 (def slot-width 10)
 (def alphabet (vec (map char (concat (range 65 91)))))
-(def triangle (extrude-linear {:height 10} (polygon [[0 0] [20 0] [10 10]])))
 
 ;; TODO remove magic numbers
 (defn main-part [length]
   (let [main-part-radius 60
+        main-part-thickness
         outer (with-fn 50
                 (->> (cylinder main-part-radius length)
                      (rotate (/ Math/PI 2) [0 1 0])
-                     (translate [(+ 20 (/ length 2)) 0 -70])))
+                     (translate [(+ (- main-part-thickness 1) (/ length 2)) 0 -70])))
         inner (with-fn 50
                 (->> (cylinder (- main-part-radius 15) (+ length 10)) ;length is + 10 purely for stability
                      (rotate (/ Math/PI 2) [0 1 0])
-                     (translate [(+ 20 (/ length 2)) 0 -70]))) ; + 20 for the plate
+                     (translate [(+ main-part-thickness (/ length 2)) 0 -70]))) ; + 20 for the plate
         slot  (->> (cube (+ 25 length) slot-width 40)
                    (translate [(+ 30 (/ length 2)) 0 -10]))
         ring (difference outer inner)
@@ -148,17 +148,19 @@
 
 
 
-(spit "output/cryptex.scad"
-  (let [amount-of-rings 7
+(defn cryptex [word]
+  (let [amount-of-rings (count word)
         stop-end-difference (stop-end (/ ring-width 2) 6 14)
         hole-stick 8]
-    (write-scad
+      (translate [-400 0 0]
+        (union
+          (difference (plate) (translate [0 0 120] (rotate (/ Math/PI 2) [0 1 0] (cylinder hole-stick 100))))
+          (difference
+            (main-part (+ 2 (* amount-of-rings (+ ring-width 1))))
+            (translate [ (+ 20 (* amount-of-rings ring-width)) 0 0] stop-end-difference))
+          (translate [ (+ 50 18 (* amount-of-rings ring-width)) 0 0] (stop-end (/ ring-width 2) 5 11))
+          (translate [500 0 0] (stick (+ 15 20 (* amount-of-rings (+ ring-width 1))) amount-of-rings))
+          (rings amount-of-rings word)))))
 
-      (translate [-400 0 0](union
-                             (difference (plate) (translate [0 0 120] (rotate (/ Math/PI 2) [0 1 0] (cylinder hole-stick 100))))
-                             (difference
-                               (main-part (+ 2 (* amount-of-rings (+ ring-width 1))))
-                               (translate [ (+ 20 (* amount-of-rings ring-width)) 0 0] stop-end-difference))))
-      (translate [ (+ 50 18 (* amount-of-rings ring-width)) 0 0] (stop-end (/ ring-width 2) 5 11))
-      (translate [500 0 0] (stick (+ 15 20 (* amount-of-rings (+ ring-width 1))) amount-of-rings))
-      (rings amount-of-rings "abraham"))))
+(spit "output/cryptex.scad"
+  (write-scad (cryptex "abraham")))
