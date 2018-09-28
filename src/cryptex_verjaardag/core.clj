@@ -9,15 +9,15 @@
 ;; TODO remove magic numbers
 (defn main-part [length]
   (let [main-part-radius 60
-        main-part-thickness
+        front-plate-thickness 20
         outer (with-fn 50
                 (->> (cylinder main-part-radius length)
                      (rotate (/ Math/PI 2) [0 1 0])
-                     (translate [(+ (- main-part-thickness 1) (/ length 2)) 0 -70])))
+                     (translate [(+ (- front-plate-thickness 1) (/ length 2)) 0 -70])))
         inner (with-fn 50
                 (->> (cylinder (- main-part-radius 15) (+ length 10)) ;length is + 10 purely for stability
                      (rotate (/ Math/PI 2) [0 1 0])
-                     (translate [(+ main-part-thickness (/ length 2)) 0 -70]))) ; + 20 for the plate
+                     (translate [(+ front-plate-thickness (/ length 2)) 0 -70]))) ; + 20 for the plate
         slot  (->> (cube (+ 25 length) slot-width 40)
                    (translate [(+ 30 (/ length 2)) 0 -10]))
         ring (difference outer inner)
