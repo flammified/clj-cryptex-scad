@@ -1,4 +1,4 @@
-(ns cryptex-verjaardag.core
+(ns cryptex.core
   (:use [scad-clj.scad])
   (:use [scad-clj.model]))
 
