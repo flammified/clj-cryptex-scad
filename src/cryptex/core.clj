@@ -163,4 +163,4 @@
           (rings amount-of-rings word)))))
 
 (spit "output/cryptex.scad"
-  (write-scad (cryptex "abraham")))
+  (write-scad (cryptex "test")))
