@@ -97,7 +97,7 @@
     (fn [result index]
       (union
         (->> (cube 12 6 30)
-            (translate [(+ 27 (* index (+ ring-width 1))) 0 -12]))
+            (translate [(+ 27 (* index (+ ring-width 1))) 0 -14]))
         result))
     stick
     (range 0 amount-of-rings)))
