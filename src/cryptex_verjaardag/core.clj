@@ -121,7 +121,7 @@
 (defn stop-end [width middle-height middle-length]
     (let [length 20
           outer (with-fn 50
-                  (->> (cylinder 80 length)
+                  (->> (cylinder 90 length)
                        (rotate (/ Math/PI 2) [0 1 0])
                        (translate [(+ 10 (/ length 2)) 0 -70])))
              inner (with-fn 50
