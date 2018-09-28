@@ -41,7 +41,7 @@ translate ([-400, 0, 0]) {
             difference () {
               translate ([20, 0, -70]) {
                 rotate (a=90.0, v=[0, 1, 0]) {
-                  cylinder ($fn=50, h=20, r=80, center=true);
+                  cylinder ($fn=50, h=20, r=90, center=true);
                 }
               }
               translate ([20, 0, -70]) {
@@ -82,7 +82,7 @@ translate ([-400, 0, 0]) {
           difference () {
             translate ([20, 0, -70]) {
               rotate (a=90.0, v=[0, 1, 0]) {
-                cylinder ($fn=50, h=20, r=80, center=true);
+                cylinder ($fn=50, h=20, r=90, center=true);
               }
             }
             translate ([20, 0, -70]) {
@@ -118,31 +118,31 @@ translate ([-400, 0, 0]) {
     }
     translate ([500, 0, 0]) {
       union () {
-        translate ([213, 0, -12]) {
+        translate ([213, 0, -14]) {
           cube ([12, 6, 30], center=true);
         }
         union () {
-          translate ([182, 0, -12]) {
+          translate ([182, 0, -14]) {
             cube ([12, 6, 30], center=true);
           }
           union () {
-            translate ([151, 0, -12]) {
+            translate ([151, 0, -14]) {
               cube ([12, 6, 30], center=true);
             }
             union () {
-              translate ([120, 0, -12]) {
+              translate ([120, 0, -14]) {
                 cube ([12, 6, 30], center=true);
               }
               union () {
-                translate ([89, 0, -12]) {
+                translate ([89, 0, -14]) {
                   cube ([12, 6, 30], center=true);
                 }
                 union () {
-                  translate ([58, 0, -12]) {
+                  translate ([58, 0, -14]) {
                     cube ([12, 6, 30], center=true);
                   }
                   union () {
-                    translate ([27, 0, -12]) {
+                    translate ([27, 0, -14]) {
                       cube ([12, 6, 30], center=true);
                     }
                     union () {
