@@ -6,7 +6,7 @@ Running the main.clj file will output the cryptex under the output/ folder. The 
 
 This is an example output:
 
-`<insert image>`
-  
+![cryptex-real](https://raw.githubusercontent.com/flammified/clj-cryptex-scad/master/cryptex-real.jpg?token=AIMURWL3TFbgHpkNmX8JL5tgE7ykwYDSks5b_moRwA%3D%3D)
+![cryptex-3d](https://raw.githubusercontent.com/flammified/clj-cryptex-scad/master/cryptex-3d.jpg?token=AIMURdSmSEVrveeakoqDYiAZTLki1kX9ks5b_moqwA%3D%3D)
+
 It consists of a main body, a stick (the part with the pins), the rings (which need to be put on the main body in the right order!) and a stop-end, to put on the end of the main body.
-  
