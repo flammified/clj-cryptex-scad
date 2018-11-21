@@ -22,12 +22,8 @@
                    (translate [(+ 30 (/ length 2)) 0 -10]))
         ring (difference outer inner)
         intersection-to-remove (intersection ring slot)]
-    ; (union
     (difference ring slot)))
-      ; (->> triangle
-      ;      (rotate (/ Math/PI 2) [0 0 1])
-      ;      (rotate (* (/ Math/PI 2) 3) [0 1 0])
-      ;      (translate [20 -10 25])))))
+
 
 
 (defn emboss-letter [letter angle radius ring]
